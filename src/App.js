@@ -34,12 +34,16 @@ class App extends Component {
 
   handleClick = event => {
     chrome.history.search({ text: "" }, historyData => {
-      console.log("Sending history data: ", historyData.slice(0, 30));
+      let data = historyData;
+      if (data.length > 30) {
+        data = historyData.slice(0, 30);
+      }
+      // console.log("Sending history data: ", historyData.slice(0, 30));
       this.setState({ loading: true });
 
       fetch(url, {
         method: "POST",
-        body: JSON.stringify(historyData.slice(0, 30)),
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         }
@@ -134,12 +138,6 @@ class App extends Component {
   };
 
   render() {
-    // chrome.history.search({ text: "" }, historyData => {
-    //   console.log("Sending history data: ", mock);
-    //   Promise.resolve().then(() => callUrl(url2, mock));
-    //   // callUrl(`${"https://cors-anywhere.herokuapp.com/"}${url}`, historyData);
-    // });
-
     chrome.runtime.onInstalled.addListener(function() {
       // Store empty array of
       chrome.storage.sync.set({ interests: [] }, function() {
